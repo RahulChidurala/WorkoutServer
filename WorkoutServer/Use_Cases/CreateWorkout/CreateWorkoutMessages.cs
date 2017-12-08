@@ -9,12 +9,13 @@ namespace WorkoutServer.Use_Cases.CreateWorkout
 {
     public class CreateWorkoutRequest: IRequest<CreateWorkoutResponse>
     {
-        public Workout workout { get; set; }
+        // Workout properties
+        public string name { get; set; }
+        public string category { get; set; }
 
-        public CreateWorkoutRequest(Workout workout)
-        {
-            this.workout = workout;
-        }
+        // Goal properties
+        public int reps { get; set; }
+        public int? weights { get; set; }
     }
 
     public class CreateWorkoutResponse

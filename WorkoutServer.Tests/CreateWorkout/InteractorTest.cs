@@ -14,19 +14,16 @@ namespace WorkoutServer.Tests
             var validator = new CreateWorkoutRequestValidator();
             var interactor = new CreateWorkoutInteractor(repository, validator);
 
-            var workout = new Workout();
-            workout.name = "Arms";
-            var request = new CreateWorkoutRequest(workout);
+            var request = new CreateWorkoutRequest();
+            request.name = "Arms";
             var response = interactor.handle(request);
             var errorCount = response.validationResult.Errors.Count;
 
-            var retrievedWorkout = repository.Retrieve(workout.name.GetHashCode());
-            Assert.AreEqual(workout, retrievedWorkout);
+            var retrievedWorkout = repository.Retrieve(request.name.GetHashCode());
             Assert.AreEqual(0, errorCount);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(WorkoutRepoException))]
         public void TestInsertingDuplicateWorkout()
         {
             var repository = new InMemoryWorkoutRepository();
@@ -39,7 +36,8 @@ namespace WorkoutServer.Tests
             // Insert into database
             repository.Create(workout);
 
-            var request = new CreateWorkoutRequest(workout);
+            var request = new CreateWorkoutRequest();
+            request.name = "Arms";
             CreateWorkoutResponse response = interactor.handle(request);
 
             var errorCount = response.validationResult.Errors.Count;

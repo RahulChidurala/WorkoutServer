@@ -11,7 +11,7 @@ namespace WorkoutServer.Use_Cases.CreateWorkout
 
         public CreateWorkoutRequestValidator()
         {
-            RuleFor(r => r.workout.name).NotEmpty().WithMessage("The workout name cannot be empty");
+            RuleFor(r => r.name).NotEmpty().WithMessage("The workout name cannot be empty");
         }
     }
 }

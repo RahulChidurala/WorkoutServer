@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WorkoutServer.Repository;
 using WorkoutServer.MessageHandlers;
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace WorkoutServer.Use_Cases.CreateWorkout
 {
@@ -21,26 +22,44 @@ namespace WorkoutServer.Use_Cases.CreateWorkout
             _validator = validator;
         }
 
-        public CreateWorkoutResponse handle(CreateWorkoutRequest message)
+        public CreateWorkoutResponse handle(CreateWorkoutRequest request)
         {
-            var validationResult = _validator.Validate(message);
+            var validationResult = _validator.Validate(request);
 
+            var goal = new Goal()
+            {
+                reps = request.reps,
+                weights = request.weights
+            };
+
+            var workout = new Workout()
+            {
+                name = request.name,
+                category = request.category,
+                goal = goal
+            };
+           
             if (validationResult.IsValid == false)
             {
-                validationResult.Errors.Add(getError("Invalid workout format!", message.workout));
+                string errorString = "";
+
+                foreach (ValidationFailure error in validationResult.Errors)
+                {
+                    errorString = errorString + "\n" + error.ErrorMessage;
+                }
+
+                validationResult.Errors.Add(getError(errorString, workout));
                 return new CreateWorkoutResponse(validationResult);
             }
 
-            try
-            {
-                _repository.Create(message.workout);
+            Workout doesWorkoutExist = _repository.Retrieve(workout.name.GetHashCode());
 
-            } catch(WorkoutRepoException ex)
+            if (doesWorkoutExist != null)
             {
-                validationResult.Errors.Add(getError(ex.Message, message.workout));
+                validationResult.Errors.Add(getError("Workout with name already exists!", workout));
                 return new CreateWorkoutResponse(validationResult);
-            } 
-            
+            }
+ 
             var response = new CreateWorkoutResponse(validationResult);
 
             return response;

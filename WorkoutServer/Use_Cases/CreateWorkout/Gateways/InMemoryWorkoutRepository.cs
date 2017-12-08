@@ -28,16 +28,7 @@ namespace WorkoutServer.Use_Cases.CreateWorkout
         /// <returns></returns>
         public void Create(Workout entity)
         {
-            var nameHash = entity.name.GetHashCode();
-
-            Workout doesWorkoutExist;
-            store.TryGetValue(nameHash, out doesWorkoutExist);
-
-            if(doesWorkoutExist != null)
-            {
-                throw new WorkoutRepoException("Workout with name already exists!");
-            }
-
+            var nameHash = entity.name.GetHashCode();            
             store.Add(nameHash, entity);
         }
 
