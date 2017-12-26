@@ -10,6 +10,7 @@ namespace WorkoutServer.Use_Cases.CreateAccount
     {
         public CreateAccountRequestValidator()
         {
+            RuleFor(r => r.email).NotEmpty().WithMessage("Email cannot be empty!");
             RuleFor(r => r.email).EmailAddress().WithMessage("Invalid email!");
             RuleFor(r => r.password).NotEmpty().WithMessage("Password cannot be empty!");
         }

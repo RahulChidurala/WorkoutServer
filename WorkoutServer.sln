@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutServer", "WorkoutSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutServer.Tests", "WorkoutServer.Tests\WorkoutServer.Tests.csproj", "{58141642-001D-419C-A802-22C67353A9B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutServerRestAPI", "WorkoutServerRestAPI\WorkoutServerRestAPI.csproj", "{D979DE46-B298-48EE-B5E3-CC14D8A45E45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutServerRestAPI.Tests", "WorkoutServerRestAPI.Tests\WorkoutServerRestAPI.Tests.csproj", "{9A6CC4CB-4CB1-4D7D-AE8F-52A2F14DA978}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{58141642-001D-419C-A802-22C67353A9B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58141642-001D-419C-A802-22C67353A9B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58141642-001D-419C-A802-22C67353A9B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D979DE46-B298-48EE-B5E3-CC14D8A45E45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D979DE46-B298-48EE-B5E3-CC14D8A45E45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D979DE46-B298-48EE-B5E3-CC14D8A45E45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D979DE46-B298-48EE-B5E3-CC14D8A45E45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A6CC4CB-4CB1-4D7D-AE8F-52A2F14DA978}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A6CC4CB-4CB1-4D7D-AE8F-52A2F14DA978}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A6CC4CB-4CB1-4D7D-AE8F-52A2F14DA978}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A6CC4CB-4CB1-4D7D-AE8F-52A2F14DA978}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
