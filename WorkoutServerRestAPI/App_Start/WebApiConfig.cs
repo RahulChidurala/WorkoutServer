@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Web.Http;
+using Unity;
+using Unity.WebApi;
 
 namespace WorkoutServerRestAPI
 {
@@ -27,6 +29,8 @@ namespace WorkoutServerRestAPI
                               StringComparison.InvariantCultureIgnoreCase,
                               true,
                               "application/json"));
+
+            UnityConfig.RegisterComponents();                           // <----- Add this line
         }
     }
 }
