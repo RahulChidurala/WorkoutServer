@@ -23,22 +23,12 @@ namespace WorkoutServerRestAPI.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public string Post([FromBody]AccountModel account)
-        {
-            var username = account.username;
-            var password = account.password;
-            CreateAccountRequest request = new CreateAccountRequest(username, password);
-
+        public string Post([FromBody]CreateAccountRequest request)
+        {            
             var response = interactor.handle(request);
             var jsonResponse = JsonConvert.SerializeObject(response, Formatting.None);
 
             return jsonResponse;
         }
-    }
-
-    public class AccountModel
-    {
-        public string username { get; set; }
-        public string password { get; set; }
     }
 }

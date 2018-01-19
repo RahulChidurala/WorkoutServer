@@ -9,14 +9,8 @@ namespace WorkoutServer.Use_Cases.CreateAccount
 {
     public class CreateAccountRequest : IRequest<CreateAccountResponse>
     {
-        public string email { get; }
-        public string password { get; }
-
-        public CreateAccountRequest(string email, string password)
-        {
-            this.email = email;
-            this.password = password;
-        }
+        public string email { get; set; }
+        public string password { get; set; }        
     }
 
     public class CreateAccountResponse

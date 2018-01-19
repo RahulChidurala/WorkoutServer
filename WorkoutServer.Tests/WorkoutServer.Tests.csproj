@@ -59,8 +59,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CreateAccount\UnitTest1.cs" />
-    <Compile Include="CreateWorkout\InteractorTest.cs" />
+    <Compile Include="CreateAccount\CreateAccountTest.cs" />
+    <Compile Include="CreateWorkout\CreateWorkoutTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

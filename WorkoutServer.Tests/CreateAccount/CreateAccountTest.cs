@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorkoutServer.Use_Cases.CreateAccount;
 using WorkoutServer.Use_Cases.CreateAccount.Gateways;
+using FluentValidation;
+using WorkoutServer.Repository;
+using WorkoutServer.Use_Cases.CreateAccount.Entities;
 
 namespace WorkoutServer.Tests.CreateAccount
 {
@@ -11,31 +14,19 @@ namespace WorkoutServer.Tests.CreateAccount
     /// Summary description for UnitTest1
     /// </summary>
     [TestClass]
-    public class UnitTest1
+    public class CreateAccountTest
     {
-        public UnitTest1()
-        {
-            //
-            // TODO: Add constructor logic here
-            //
-        }
 
-        private TestContext testContextInstance;
+        private IRepository<string, Account> repo;
+        private AbstractValidator<CreateAccountRequest> validator;
+        private CreateAccountInteractor interactor;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
+        [TestInitialize]
+        public void Initialize()
         {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
+            repo = new InMemoryAccountRepository();
+            validator = new CreateAccountRequestValidator();
+            interactor = new CreateAccountInteractor(repo, validator);
         }
 
         #region Additional test attributes
@@ -63,11 +54,9 @@ namespace WorkoutServer.Tests.CreateAccount
         [TestMethod]
         public void TestCreatingValidAccount()
         {
-            var repository = new InMemoryAccountRepository();
-            var validator = new CreateAccountRequestValidator();
-            var interactor = new CreateAccountInteractor(repository, validator);
-
-            var createAccountRequest = new CreateAccountRequest("rahul@mail.com", "password");
+            var createAccountRequest = new CreateAccountRequest();
+            createAccountRequest.email = "rahul@mail.com";
+            createAccountRequest.password = "password";
 
             var response = interactor.handle(createAccountRequest);
 
@@ -77,14 +66,15 @@ namespace WorkoutServer.Tests.CreateAccount
         [TestMethod]
         public void TestCreatingDuplicateAccount()
         {
-            var repository = new InMemoryAccountRepository();
-            var validator = new CreateAccountRequestValidator();
-            var interactor = new CreateAccountInteractor(repository, validator);
-
-            var createAccountRequest = new CreateAccountRequest("rahul@mail.com", "password");
+            var createAccountRequest = new CreateAccountRequest();
+            createAccountRequest.email = "rahul@mail.com";
+            createAccountRequest.password = "password";
 
             var response = interactor.handle(createAccountRequest);
-            var response2 = interactor.handle(new CreateAccountRequest("rahul@mail.com", "beep"));
+            var response2 = interactor.handle(new CreateAccountRequest{
+                    email = "rahul@mail.com",
+                    password = "beep"
+                });
 
             Assert.IsTrue(response2.Success == false);
             Assert.AreEqual(1, response2.validationResult.Errors.Count);

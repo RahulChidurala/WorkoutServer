@@ -29,10 +29,10 @@ namespace WorkoutServerRestAPI.Tests.Controllers
         [TestMethod]
         public void CreateAccount_WhenNoExistingUsername_ShouldResponseIsSuccess()
         {
-            var model = new AccountModel();
-            model.username = "user1@email.com";
-            model.password = "password1";
-            var response = controller.Post(model);
+            var request = new CreateAccountRequest();
+            request.email = "user1@email.com";
+            request.password = "password1";
+            var response = controller.Post(request);
 
             var createAccountResponse = (CreateAccountResponse)JsonConvert.DeserializeObject<CreateAccountResponse>(response);
 
@@ -43,13 +43,13 @@ namespace WorkoutServerRestAPI.Tests.Controllers
         public void CreateAccount_WhenExistingUsername_ShouldResponseIsNotSuccesful()
         {
             // Insert first user
-            var model = new AccountModel();
-            model.username = "user1@email.com";
-            model.password = "password1";
-            controller.Post(model);
+            var request = new CreateAccountRequest();
+            request.email = "user1@email.com";
+            request.password = "password1";
+            controller.Post(request);
 
             // Insert second user
-            var response = controller.Post(model);
+            var response = controller.Post(request);
 
             var createAccountResponse = (CreateAccountResponse)JsonConvert.DeserializeObject<CreateAccountResponse>(response);
 
@@ -59,10 +59,10 @@ namespace WorkoutServerRestAPI.Tests.Controllers
         [TestMethod]
         public void CreateAccount_WhenInvalidUsername_ShouldInvalidUsername()
         {
-            var model = new AccountModel();
-            model.username = "user1NotEmail";
-            model.password = "password1";
-            var response = controller.Post(model);
+            var request = new CreateAccountRequest();
+            request.email = "user1";
+            request.password = "password1";
+            var response = controller.Post(request);
 
             var createAccountResponse = (CreateAccountResponse)JsonConvert.DeserializeObject<CreateAccountResponse>(response);
 
