@@ -10,8 +10,8 @@ namespace WorkoutServer.Use_Cases.LoginToAccount
     {
         public LoginToAccountRequestValidator()
         {
-            RuleFor(r => r.username).NotEmpty().WithMessage("Username cannot be empty!");
-            RuleFor(r => r.password).NotEmpty().WithMessage("Password cannot be empty!");
+            RuleFor(r => r.Email).NotEmpty().WithMessage("Email cannot be empty!");
+            RuleFor(r => r.Password).NotEmpty().WithMessage("Password cannot be empty!");
         }
     }
 }

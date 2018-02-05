@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WorkoutServer.Entities;
 using WorkoutServer.Repository;
 
-namespace WorkoutServer.Use_Cases.CreateWorkout
+namespace WorkoutServer.Gateways
 {
     public class InMemoryWorkoutRepository : IRepository<int, Workout>
     {
-        private static readonly Dictionary<int, Workout> store = new Dictionary<int, Workout>();
+        private readonly Dictionary<int, Workout> store = new Dictionary<int, Workout>();
 
         /// <summary>
         /// Gets all workout objects.
@@ -28,13 +29,13 @@ namespace WorkoutServer.Use_Cases.CreateWorkout
         /// <returns></returns>
         public void Create(Workout entity)
         {
-            var nameHash = entity.name.GetHashCode();            
+            var nameHash = entity.Name.GetHashCode();            
             store.Add(nameHash, entity);
         }
 
         public void Delete(Workout entity)
         {
-            throw new NotImplementedException();
+            store.Remove(entity.Name.GetHashCode());
         }
 
         public Workout Retrieve(int id)
@@ -47,7 +48,7 @@ namespace WorkoutServer.Use_Cases.CreateWorkout
 
         public void Update(Workout entity)
         {
-            throw new NotImplementedException();
+            store[entity.Name.GetHashCode()] = entity;
         }
     }
 

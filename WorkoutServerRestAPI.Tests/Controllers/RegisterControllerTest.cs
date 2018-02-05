@@ -1,12 +1,12 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorkoutServer.Repository;
-using WorkoutServer.Use_Cases.CreateAccount.Gateways;
+using WorkoutServer.Gateways;
 using WorkoutServerRestAPI.Controllers;
 using Newtonsoft.Json;
 using FluentValidation;
 using WorkoutServer.Use_Cases.CreateAccount;
-using WorkoutServer.Use_Cases.CreateAccount.Entities;
+using WorkoutServer.Entities;
 
 namespace WorkoutServerRestAPI.Tests.Controllers
 {
@@ -27,7 +27,7 @@ namespace WorkoutServerRestAPI.Tests.Controllers
         }
 
         [TestMethod]
-        public void CreateAccount_WhenNoExistingUsername_ShouldResponseIsSuccess()
+        public void RegisterController_WhenNoExistingEmail_ShouldResponseIsSuccess()
         {
             var request = new CreateAccountRequest();
             request.email = "user1@email.com";
@@ -40,7 +40,7 @@ namespace WorkoutServerRestAPI.Tests.Controllers
         }
 
         [TestMethod]
-        public void CreateAccount_WhenExistingUsername_ShouldResponseIsNotSuccesful()
+        public void RegisterController_WhenExistingEmail_ShouldResponseIsNotSuccesful()
         {
             // Insert first user
             var request = new CreateAccountRequest();
@@ -57,7 +57,7 @@ namespace WorkoutServerRestAPI.Tests.Controllers
         }
 
         [TestMethod]
-        public void CreateAccount_WhenInvalidUsername_ShouldInvalidUsername()
+        public void RegisterController_WhenInvalidEmail_ShouldInvalidEmail()
         {
             var request = new CreateAccountRequest();
             request.email = "user1";

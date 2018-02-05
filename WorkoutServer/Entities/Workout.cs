@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace WorkoutServer.Use_Cases.CreateWorkout
+namespace WorkoutServer.Entities
 {
     public class Workout
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string category { get; set; }
-        public Goal? goal { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public Goal? Goal { get; set; }
+        public Account Author { get; set; }
     }
 
     public struct Goal

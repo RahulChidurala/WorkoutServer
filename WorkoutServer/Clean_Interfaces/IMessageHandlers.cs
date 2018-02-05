@@ -12,9 +12,9 @@ namespace WorkoutServer.MessageHandlers
         /// <summary>
         /// Handles a request
         /// </summary>
-        /// <param name="message">The request message</param>
+        /// <param name="request">The request message</param>
         /// <returns>Response from the request</returns>
-        TResponse handle(TRequest message);
+        TResponse handle(TRequest request);
     }
 
     interface IResponseHandler<Response>

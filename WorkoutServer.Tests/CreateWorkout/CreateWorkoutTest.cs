@@ -3,6 +3,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorkoutServer.Use_Cases.CreateWorkout;
 using WorkoutServer.Repository;
 using FluentValidation;
+using WorkoutServer.Entities;
+using WorkoutServer.Gateways;
+using WorkoutServer.Authentication;
+using WorkoutServer.Use_Cases.LoginToAccount;
 
 namespace WorkoutServer.Tests
 {
@@ -10,50 +14,130 @@ namespace WorkoutServer.Tests
     public class InteractorTest
     {
 
-        private IRepository<int, Workout> repo;
-        private AbstractValidator<CreateWorkoutRequest> validator;
-        private CreateWorkoutInteractor interactor;
+        // CreateWorkout
+        private IRepository<int, Workout> workoutRepo;
+        private AbstractValidator<CreateWorkoutRequest> workoutRequestValidator;
+        private CreateWorkoutInteractor workoutInteractor;
 
-        [TestInitialize]
+        // LoginToAccount
+        private IRepository<string, Account> accountRepo;
+        private LoginToAccountRequestValidator loginRequestValidator;
+        private LoginToAccountInteractor loginInteractor;
+
+        // Authenticator
+        private IRepository<string, LoginSession> sessionRepo;
+        private IAuthentication<LoginSession> authenticator;
+
+        [TestInitialize()]
         public void Initialize()
         {
-            repo = new InMemoryWorkoutRepository();
-            validator = new CreateWorkoutRequestValidator();
-            interactor = new CreateWorkoutInteractor(repo, validator);
+            // Authenticator
+            sessionRepo = new InMemoryLoginSessionRepository();
+            authenticator = new AuthenticationService(sessionRepo);
+
+            // LoginToAccount
+            accountRepo = new InMemoryAccountRepository();
+            loginRequestValidator = new LoginToAccountRequestValidator();
+            loginInteractor = new LoginToAccountInteractor(accountRepo, sessionRepo, loginRequestValidator);
+            
+            // CreateWorkout
+            workoutRepo = new InMemoryWorkoutRepository();
+            workoutRequestValidator = new CreateWorkoutRequestValidator();
+            sessionRepo = new InMemoryLoginSessionRepository();
+            workoutInteractor = new CreateWorkoutInteractor(workoutRepo, workoutRequestValidator, authenticator);
+
+            // Create account for testing
+            var account = new Account("rahul@mail.com", "password1");
+            accountRepo.Create(account);
         }
 
+        // TODO: Replace errors with exceptions
         [TestMethod]
-        public void CreateNewWorkout_WhenValidNewWorkout_ShouldBe0Errors()
+        public void CreateNewWorkout_WhenValidSessionAndValidNewWorkout_ShouldBe0Errors()
         {
-            var request = new CreateWorkoutRequest();
-            request.name = "Arms";
-            var response = interactor.handle(request);
-            var errorCount = response.validationResult.Errors.Count;
+            // Login to get session
+            var loginRequest = new LoginToAccountRequest()
+            {
+                Email = "rahul@mail.com",
+                Password = "password1"
+            };
 
-            var retrievedWorkout = repo.Retrieve(request.name.GetHashCode());
+            var loginResponse = loginInteractor.handle(loginRequest);
+
+            var request = new CreateWorkoutRequest
+            {
+                Name = "Arms",
+                LoginSession = loginResponse.LoginSession
+            };
+
+            var response = workoutInteractor.handle(request);
+            var errorCount = response.ValidationResult.Errors.Count;
+
             Assert.AreEqual(0, errorCount);
+            Assert.IsTrue(response.Success);
+
+            var retrievedWorkout = workoutRepo.Retrieve(request.Name.GetHashCode());            
+            Assert.IsNotNull(retrievedWorkout);
         }
 
+        // TODO: Throw errors and check for those!!!
         [TestMethod]
-        public void CreateNewWorkout_WhenDuplicateWorkout_ShouldBe1Errors()
+        public void CreateNewWorkout_WhenValidSessionAndDuplicateWorkout_ShouldBe1Errors()
         {
-            var repository = new InMemoryWorkoutRepository();
-            var validator = new CreateWorkoutRequestValidator();
-            var interactor = new CreateWorkoutInteractor(repository, validator);
+            // Login to get session
+            var loginRequest = new LoginToAccountRequest()
+            {
+                Email = "rahul@mail.com",
+                Password = "password1"
+            };
 
-            var workout = new Workout();
-            workout.name = "Arms";
+            var loginResponse = loginInteractor.handle(loginRequest);
+
+            var workout = new Workout
+            {
+                Name = "Arms"
+            };
 
             // Insert into database
-            repository.Create(workout);
+            workoutRepo.Create(workout);
 
-            var request = new CreateWorkoutRequest();
-            request.name = "Arms";
-            CreateWorkoutResponse response = interactor.handle(request);
+            // CreateWorkout request
+            var request = new CreateWorkoutRequest
+            {
+                Name = "Arms",
+                LoginSession = loginResponse.LoginSession
+            };
+            CreateWorkoutResponse response = workoutInteractor.handle(request);
 
-            var errorCount = response.validationResult.Errors.Count;
-            
+            var errorCount = response.ValidationResult.Errors.Count;            
             Assert.AreEqual(1, errorCount);
+
+            var errorString = response.ValidationResult.Errors[0].ToString();
+
+            // TODO: Throw errors and check for those!!!
+            Assert.IsTrue(errorString.Contains("Workout with name already exists!"));
+        }
+
+        // TODO: Throw errors and check for those!!!
+        [TestMethod]
+        public void CreateNewWorkout_WhenNoSessionAndValidNewWorkout_ShouldBe1Errors()
+        {
+
+            var request = new CreateWorkoutRequest
+            {
+                Name = "Arms",
+                LoginSession = null
+            };
+
+            var response = workoutInteractor.handle(request);
+            var errorCount = response.ValidationResult.Errors.Count;
+
+            Assert.IsFalse(response.Success);
+            Assert.AreEqual(1, errorCount);
+
+            var errorString = response.ValidationResult.Errors[0].ToString();
+            // TODO: Throw errors and check for those!!!
+            Assert.IsTrue(errorString.Contains("There is no session"));            
         }
     }
 }

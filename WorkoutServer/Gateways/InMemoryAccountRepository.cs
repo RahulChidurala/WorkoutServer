@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using WorkoutServer.Entities;
 using WorkoutServer.Repository;
-using WorkoutServer.Use_Cases.CreateAccount.Entities;
 
-namespace WorkoutServer.Use_Cases.CreateAccount.Gateways
+namespace WorkoutServer.Gateways
 {
+    /**
+     * IRepository<string, Account>. String is the primary key.
+     */
     public class InMemoryAccountRepository : IRepository<string, Account>
     {
-        private static readonly Dictionary<string, Account> repo = new Dictionary<string, Account>();
+        private readonly Dictionary<string, Account> repo = new Dictionary<string, Account>();
 
         public IEnumerable<Account> All()
         {
@@ -23,7 +26,7 @@ namespace WorkoutServer.Use_Cases.CreateAccount.Gateways
 
         public void Delete(Account entity)
         {
-            throw new NotImplementedException();
+            repo.Remove(entity.Email);
         }
 
         public Account Retrieve(string id)
@@ -36,7 +39,7 @@ namespace WorkoutServer.Use_Cases.CreateAccount.Gateways
 
         public void Update(Account entity)
         {
-            throw new NotImplementedException();
+            repo[entity.Email] = entity;
         }
     }
 }

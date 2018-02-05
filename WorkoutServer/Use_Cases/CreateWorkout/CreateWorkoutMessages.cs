@@ -4,27 +4,33 @@ using System.Linq;
 using System.Web;
 using FluentValidation.Results;
 using WorkoutServer.Messages;
+using WorkoutServer.Entities;
 
 namespace WorkoutServer.Use_Cases.CreateWorkout
 {
     public class CreateWorkoutRequest: IRequest<CreateWorkoutResponse>
     {
+        // Session authentication
+        public LoginSession LoginSession { get; set; }
+
         // Workout properties
-        public string name { get; set; }
-        public string category { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
 
         // Goal properties
-        public int reps { get; set; }
-        public int? weights { get; set; }
+        public int Reps { get; set; }
+        public int? Weights { get; set; }
     }
 
     public class CreateWorkoutResponse
     {
-        public ValidationResult validationResult { get; }
+        public ValidationResult ValidationResult { get; }
+        public bool Success { get; }
 
-        public CreateWorkoutResponse(ValidationResult validationResult)
+        public CreateWorkoutResponse(ValidationResult validationResult, bool success)
         {
-            this.validationResult = validationResult;
+            this.ValidationResult = validationResult;
+            this.Success = success;
         }
     }
 }

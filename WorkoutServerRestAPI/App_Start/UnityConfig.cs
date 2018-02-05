@@ -4,8 +4,10 @@ using Unity.WebApi;
 using FluentValidation;
 using WorkoutServer.Repository;
 using WorkoutServer.Use_Cases.CreateAccount;
-using WorkoutServer.Use_Cases.CreateAccount.Gateways;
-using WorkoutServer.Use_Cases.CreateAccount.Entities;
+using WorkoutServer.Use_Cases.LoginToAccount;
+using WorkoutServer.Gateways;
+using WorkoutServer.Entities;
+using WorkoutServer.Authentication;
 
 namespace WorkoutServerRestAPI
 {
@@ -22,6 +24,10 @@ namespace WorkoutServerRestAPI
 
             container.RegisterType<IRepository<string, Account>, InMemoryAccountRepository>();
             container.RegisterType<AbstractValidator<CreateAccountRequest>, CreateAccountRequestValidator>();
+
+            container.RegisterType<IRepository<string, LoginSession>, InMemoryLoginSessionRepository>();
+            container.RegisterType<IAuthentication<LoginSession>, AuthenticationService>();
+            container.RegisterType<AbstractValidator<LoginToAccountRequest>, LoginToAccountRequestValidator>();
                 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
 

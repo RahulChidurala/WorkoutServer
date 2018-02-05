@@ -1,30 +1,31 @@
 ﻿using System.Web.Http;
 using WorkoutServer.Repository;
-using WorkoutServer.Use_Cases.CreateAccount;
-using WorkoutServer.Use_Cases.CreateAccount.Gateways;
-using WorkoutServer.Use_Cases.CreateAccount.Entities;
 using FluentValidation;
+using WorkoutServer.Entities;
+using WorkoutServer.Use_Cases.LoginToAccount;
+using WorkoutServer.Gateways;
+using Newtonsoft.Json;
 
 namespace WorkoutServerRestAPI.Controllers
 {
     
     public class LoginController : ApiController
     {
-        private IRepository<string, Account> repo;
-        private AbstractValidator<CreateAccountRequest> validation;
-        private CreateAccountInteractor interactor;
+        private LoginToAccountInteractor _interactor;
 
-        public LoginController()
+        public LoginController(IRepository<string, Account> accountRepo, IRepository<string, LoginSession> sessionRepo, AbstractValidator<LoginToAccountRequest> validator)
         {
-            repo = new InMemoryAccountRepository();
-            validation = new CreateAccountRequestValidator();
-            interactor = new CreateAccountInteractor(repo, validation);
+            _interactor = new LoginToAccountInteractor(accountRepo, sessionRepo, validator);
         }
 
         // POST api/<controller>
-        public void Post([FromBody]string username, [FromBody]string password)
+        [HttpPost]
+        public string Post([FromBody]LoginToAccountRequest request)
         {
-            
+            var response = _interactor.handle(request);
+            var jsonResponse = JsonConvert.SerializeObject(response, Formatting.None);
+
+            return jsonResponse;
         }
     }
 }

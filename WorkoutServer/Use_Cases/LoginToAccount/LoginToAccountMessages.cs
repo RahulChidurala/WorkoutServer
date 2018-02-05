@@ -4,34 +4,38 @@ using System.Linq;
 using System.Web;
 using WorkoutServer.Messages;
 using FluentValidation.Results;
+using WorkoutServer.Entities;
 
 namespace WorkoutServer.Use_Cases.LoginToAccount
 {
     public class LoginToAccountRequest: IRequest<LoginToAccountResponse>
     {
-        public String username { get; }
-        public String password { get; }
+        public String Email { get; set; }
+        public String Password { get; set; }
 
-        public LoginToAccountRequest(String username, String password)
+        public LoginToAccountRequest() { }
+
+        public LoginToAccountRequest(String email, String password)
         {
-            this.username = username;
-            this.password = password;
+            this.Email = email;
+            this.Password = password;
         }
     }
 
     public class LoginToAccountResponse
     {
 
-        public String username { get; }
+        public bool Success { get; set; }
+        public String Email { get; set; }
+        public LoginSession LoginSession { get; set; }
+        public ValidationResult ValidationResult { get; set; }
 
-        public ValidationResult validationResult { get; }
+        public LoginToAccountResponse() { }
 
-        public LoginToAccountResponse(String username, ValidationResult validationResult)
+        public LoginToAccountResponse(string email, ValidationResult validationResult)
         {
-
-            this.username = username;
-            this.validationResult = validationResult;
+            Email = email;
+            ValidationResult = validationResult;
         }
-
     }
 }

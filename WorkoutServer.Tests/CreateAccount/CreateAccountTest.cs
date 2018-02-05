@@ -3,10 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorkoutServer.Use_Cases.CreateAccount;
-using WorkoutServer.Use_Cases.CreateAccount.Gateways;
+using WorkoutServer.Gateways;
 using FluentValidation;
 using WorkoutServer.Repository;
-using WorkoutServer.Use_Cases.CreateAccount.Entities;
+using WorkoutServer.Entities;
 
 namespace WorkoutServer.Tests.CreateAccount
 {
@@ -21,7 +21,7 @@ namespace WorkoutServer.Tests.CreateAccount
         private AbstractValidator<CreateAccountRequest> validator;
         private CreateAccountInteractor interactor;
 
-        [TestInitialize]
+        [TestInitialize()]
         public void Initialize()
         {
             repo = new InMemoryAccountRepository();
@@ -52,7 +52,7 @@ namespace WorkoutServer.Tests.CreateAccount
         #endregion
 
         [TestMethod]
-        public void TestCreatingValidAccount()
+        public void CreateAccount_WhenValidAccount_ShouldBeSuccessful()
         {
             var createAccountRequest = new CreateAccountRequest();
             createAccountRequest.email = "rahul@mail.com";
@@ -64,7 +64,9 @@ namespace WorkoutServer.Tests.CreateAccount
         }
 
         [TestMethod]
-        public void TestCreatingDuplicateAccount()
+        // TODO: Use exceptions instead
+        //[ExpectedException(typeof(ArgumentException), "A duplicate account was created!")]
+        public void CreateAccount_WhenAccountIsDuplicate_ShouldNotSucceed()
         {
             var createAccountRequest = new CreateAccountRequest();
             createAccountRequest.email = "rahul@mail.com";
@@ -74,7 +76,7 @@ namespace WorkoutServer.Tests.CreateAccount
             var response2 = interactor.handle(new CreateAccountRequest{
                     email = "rahul@mail.com",
                     password = "beep"
-                });
+            });
 
             Assert.IsTrue(response2.Success == false);
             Assert.AreEqual(1, response2.validationResult.Errors.Count);

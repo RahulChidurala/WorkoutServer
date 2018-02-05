@@ -4,27 +4,28 @@ using System.Linq;
 using System.Web;
 using WorkoutServer.Repository;
 using WorkoutServer.MessageHandlers;
-using WorkoutServer.Use_Cases.CreateAccount.Entities;
 using FluentValidation;
 using FluentValidation.Results;
+using WorkoutServer.Entities;
+using WorkoutServer.Authentication;
 
 namespace WorkoutServer.Use_Cases.CreateAccount
 {
     public class CreateAccountInteractor : IRequestHandler<CreateAccountRequest, CreateAccountResponse>
     {
 
-        private IRepository<string, Account> repository;
-        private IValidator<CreateAccountRequest> validator;
+        private IRepository<string, Account> _repo;
+        private IValidator<CreateAccountRequest> _validator;
 
         public CreateAccountInteractor(IRepository<string, Account> repository, IValidator<CreateAccountRequest> validator)
         {
-            this.repository = repository;
-            this.validator = validator;
+            this._repo = repository;
+            this._validator = validator;
         }
 
         public CreateAccountResponse handle(CreateAccountRequest message)
         {
-            var validationResult = validator.Validate(message);
+            var validationResult = _validator.Validate(message);
             CreateAccountResponse response = new CreateAccountResponse(validationResult);
 
             if (validationResult.IsValid == false)
@@ -43,7 +44,7 @@ namespace WorkoutServer.Use_Cases.CreateAccount
                 return response;
             }
 
-            var existingEmail = repository.Retrieve(message.email);
+            var existingEmail = _repo.Retrieve(message.email);
             if (existingEmail != null)
             {
                 validationResult.Errors.Add(getError("An account with this email already exists."));
@@ -70,7 +71,7 @@ namespace WorkoutServer.Use_Cases.CreateAccount
 
         private void saveAccount(Account account)
         {
-            repository.Create(account);
+            _repo.Create(account);
         }
     }
 }
